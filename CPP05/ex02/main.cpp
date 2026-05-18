@@ -16,8 +16,6 @@
 #include "PresidentialPardonForm.hpp"
 #include "RobotomyRequestForm.hpp"
 
-//Remove the newline after Exception messages on every previous exercise
-
 void	ConstructorCheck()
 {
 	Bureaucrat				correct("Correct", 1);

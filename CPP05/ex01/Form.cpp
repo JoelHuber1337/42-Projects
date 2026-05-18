@@ -91,10 +91,10 @@ std::ostream&	operator << (std::ostream &out, const Form &b)
 
 const char	*Form::GradeTooHighException::what() const throw()
 {
-	return ("This Grade is too high\n");
+	return ("This Grade is too high");
 }
 
 const char	*Form::GradeTooLowException::what() const throw()
 {
-	return ("This Grade is too low\n");
+	return ("This Grade is too low");
 }
