@@ -12,7 +12,7 @@
 
 #ifndef BUREAUCRAT_HPP
 # define BUREAUCRAT_HPP
-# include "Form.hpp"
+# include "AForm.hpp"
 # include <iostream>
 # include <string>
 # include <exception>
@@ -20,7 +20,7 @@
 # define HIGHEST_GRADE 1
 # define LOWEST_GRADE 150
 
-class Form;
+class AForm;
 
 class Bureaucrat
 {
@@ -39,7 +39,8 @@ class Bureaucrat
 	int						getGrade() const;
 	void					incrementGrade(int plus = 1);
 	void					decrementGrade(int minus = 1);
-	void					signForm(Form *document, bool error);
+	void					signForm(AForm *document, bool error);
+	void					executeForm(AForm const & form) const;
 	class		GradeTooHighException : public std::exception
 	{
 		public:

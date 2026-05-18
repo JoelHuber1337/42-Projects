@@ -26,7 +26,7 @@ class Bureaucrat
 		int					grade;
 	public:
 		Bureaucrat();
-		Bureaucrat(std::string name, int grade);	//We need a copy constructor too and an overload of the = operator
+		Bureaucrat(std::string name, int grade);
 		Bureaucrat(const Bureaucrat &cpy);
 		~Bureaucrat();
 	

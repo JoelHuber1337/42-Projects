@@ -13,11 +13,6 @@
 #include "Bureaucrat.hpp"
 #include "Form.hpp"
 
-//Clean out comments in Ex00
-//Write the exceptions for the form
-//write a member function for form and beaucrats
-//write tests
-
 int	main()
 {
 	Bureaucrat	correct("Correct", 1);

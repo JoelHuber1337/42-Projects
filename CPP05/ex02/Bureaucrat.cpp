@@ -52,7 +52,20 @@ Bureaucrat&	Bureaucrat::operator = (const Bureaucrat &cpy)
 	return (*this);
 }
 
-void	Bureaucrat::signForm(Form *document, bool error)
+void	Bureaucrat::executeForm(AForm const & form) const
+{
+	try
+	{
+		form.execute(*this);
+		std::cout << *this << " executed " << form << "\n";
+	}
+	catch(std::exception &e)
+	{
+		std::cout << e.what() << "\n";
+	}
+}
+
+void	Bureaucrat::signForm(AForm *document, bool error)
 {
 	if (error)
 	{
@@ -98,10 +111,10 @@ std::ostream&	operator << (std::ostream &out, const Bureaucrat &b)
 
 const char	*Bureaucrat::GradeTooHighException::what() const throw()
 {
-	return ("This Grade is too high\n");
+	return ("This Grade is too high");
 }
 
 const char	*Bureaucrat::GradeTooLowException::what() const throw()
 {
-	return ("This Grade is too low\n");
+	return ("This Grade is too low");
 }

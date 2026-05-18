@@ -1,9 +1,9 @@
 NAME = bureaucrat
 CC = c++
 CFLAGS = -Wall -Wextra -Werror -MMD -MP -std=c++98
-SRC = main.cpp Bureaucrat.cpp Form.cpp
+SRC = main.cpp Bureaucrat.cpp AForm.cpp PresidentialPardonForm.cpp RobotomyRequestForm.cpp ShrubberyCreationForm.cpp
 RM = rm -rf
-OBJS = main.o Bureaucrat.o Form.o
+OBJS = main.o Bureaucrat.o AForm.o PresidentialPardonForm.o RobotomyRequestForm.o ShrubberyCreationForm.o
 DEPS = $(SRC:.cpp=.d)
 RED = \033[31m
 RESET = \033[0m
