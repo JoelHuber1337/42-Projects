@@ -1,9 +1,9 @@
-NAME = bureaucrat
+NAME = convert
 CC = c++
 CFLAGS = -Wall -Wextra -Werror -MMD -MP -std=c++98
-SRC = main.cpp Bureaucrat.cpp AForm.cpp PresidentialPardonForm.cpp RobotomyRequestForm.cpp ShrubberyCreationForm.cpp Intern.cpp
+SRC = main.cpp ScalarConverter.cpp
 RM = rm -rf
-OBJS = main.o Bureaucrat.o AForm.o PresidentialPardonForm.o RobotomyRequestForm.o ShrubberyCreationForm.o Intern.o
+OBJS = main.o ScalarConverter.o
 DEPS = $(SRC:.cpp=.d)
 RED = \033[31m
 RESET = \033[0m
