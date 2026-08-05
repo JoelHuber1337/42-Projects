@@ -31,4 +31,6 @@ int main()
     std::cout << res->page << "\n";
     std::cout << res->author << "\n";
     std::cout << res->poem << std::endl;
+    delete ptr;
+    return (0);
 }
