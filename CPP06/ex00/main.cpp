@@ -26,5 +26,4 @@ int main(int arc, char **arv)
     }
     ScalarConverter::convert(arv[1]);
     return (0);
-
 }
