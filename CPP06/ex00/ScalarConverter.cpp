@@ -156,7 +156,7 @@ static int  checkChar(const std::string &string)
 static int  checkSpecial(const std::string &string)
 {
 
-    if (string == "nan" || string == "nanf" || string == "nanl" || string == "inf" || string == "inff" || string == "-inff" || string == "+inff" || string == "-inf" || string == "+inf" || string == "-nan" || string == "-nanf" || string == "-nanl" || string == "+nan" || string == "+nanf" || string == "+nanl")
+    if (string == "nan" || string == "nanf" || string == "inf" || string == "inff" || string == "-inff" || string == "+inff" || string == "-inf" || string == "+inf")
         return (5);
     return (-1);
 }
@@ -190,11 +190,9 @@ static void printFloat(const std::string &string)
     long        i;
 
     i = std::atol(string.c_str());
+    d = std::strtold(string.c_str(), NULL);
     if (calcLen(string) > 13)
-    {
-        std::cout << "hey\n";
         i = (long)MAX_INT + 3;
-    }
     if (i > MAX_INT || i < MIN_INT)
     {
         std::cout << "char: Overflow\n";
@@ -205,12 +203,11 @@ static void printFloat(const std::string &string)
         if (i > 127 || i < 0)
             std::cout << "char: Overflow\n";
         else if (isprint(static_cast<char>(i)))
-            std::cout << "char: '" << static_cast<char>(i) << "'\n";
+            std::cout << "char: '" << static_cast<char>(d) << "'\n";
         else
             std::cout << "char: Non displayable\n";
-        std::cout << "int: " << i << "\n";
+        std::cout << "int: " << static_cast<int>(d) << "\n";
     }
-    d = std::strtold(string.c_str(), NULL);
     if (calcFLen(string) > 311 || d > MAX_DOUBLE || d < -MAX_DOUBLE)
     {
         std::cout << "float: Overflow\n";
@@ -234,6 +231,7 @@ static void printDouble(const std::string &string)
     long        i;
 
     i = std::atol(string.c_str());
+    d = std::strtold(string.c_str(), NULL);
     if (calcLen(string) > 13)
         i = (long)MAX_INT + 3;
     if (i > MAX_INT || i < MIN_INT)
@@ -246,12 +244,11 @@ static void printDouble(const std::string &string)
         if (i > 127 || i < 0)
             std::cout << "char: Overflow\n";
         else if (isprint(static_cast<char>(i)))
-            std::cout << "char: '" << static_cast<char>(i) << "'\n";
+            std::cout << "char: '" << static_cast<char>(d) << "'\n";
         else
             std::cout << "char: Non displayable\n";
-        std::cout << "int: " << i << "\n";
+        std::cout << "int: " << static_cast<int>(d) << "\n";
     }
-    d = std::strtold(string.c_str(), NULL);
     if (calcFLen(string) > 311 || d > MAX_DOUBLE || d < -MAX_DOUBLE)
     {
         std::cout << "float: Overflow\n";
@@ -304,10 +301,10 @@ static void printInt(const std::string &string)
     else
     {
         std::cout.setf(std::ios_base::fixed);
-        std::cout << "float: " << std::setprecision(calcPrecis(string)) << static_cast<float>(d) << "f\n";
+        std::cout << "float: " << std::setprecision(calcPrecis(string)) << static_cast<float>(i) << "f\n";
     }
     std::cout.setf(std::ios_base::fixed);
-    std::cout << "double: " << std::setprecision(calcPrecis(string)) << static_cast<double>(d) << "\n";
+    std::cout << "double: " << std::setprecision(calcPrecis(string)) << static_cast<double>(i) << "\n";
 }
 
 static void printChar(const std::string &string)
@@ -323,19 +320,26 @@ static void printChar(const std::string &string)
 
 static void printSpecial(const std::string &string)
 {
-    if (string == "nan" || string == "nanf" || string == "nanl" || string == "+nan" || string == "+nanf" || string == "+nanl" || string == "-nan" || string == "-nanf" || string == "-nanl")
+    if (string == "nan" || string == "nanf")
     {
         std::cout << "char: impossible\n";
         std::cout << "int: impossible\n";
         std::cout << "float: nanf\n";
         std::cout << "double: nan\n"; 
     }
-    if (string == "+inf" || string == "+inff" || string == "-inf" || string == "-inff" || string == "inf" || string == "inff")
+    if (string == "+inf" || string == "+inff" || string == "inf" || string == "inff")
     {
-        std::cout << "char: Overflow\n";
-        std::cout << "int: Overflow\n";
-        std::cout << "float: Overflow\n";
-        std::cout << "double: Overflow\n";
+        std::cout << "char: impossible\n";
+        std::cout << "int: impossible\n";
+        std::cout << "float: inff\n";
+        std::cout << "double: inf\n";
+    }
+    if (string == "-inf" || string == "-inff")
+    {
+        std::cout << "char: impossible\n";
+        std::cout << "int: impossible\n";
+        std::cout << "float: -inff\n";
+        std::cout << "double: -inf\n";
     }
 }
 

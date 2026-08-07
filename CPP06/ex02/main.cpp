@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: johuber <johuber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 18:34:41 by marvin            #+#    #+#             */
-/*   Updated: 2026/08/04 18:34:41 by marvin           ###   ########.fr       */
+/*   Updated: 2026/08/06 17:53:56 by johuber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,26 +53,27 @@ void    identify(Base *p)
 
 void    identify(Base &p)
 {
-    Base    *ptr = NULL;
 
     try
     {
-        *ptr = dynamic_cast<A&>(p);
-
+        A &ptr = dynamic_cast<A&>(p);
+        (void)ptr;
         std::cout << "Class A\n";
     }
     catch(const std::exception& e)
     {}
     try
     {
-        *ptr = dynamic_cast<B&>(p);
+        B &ptr = dynamic_cast<B&>(p);
+        (void)ptr;
         std::cout << "Class B\n";
     }
     catch(const std::exception& e)
     {}
     try
     {
-        *ptr = dynamic_cast<C&>(p);
+        C &ptr = dynamic_cast<C&>(p);
+        (void)ptr;
         std::cout << "Class C\n";
     }
     catch(const std::exception& e)

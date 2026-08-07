@@ -1,19 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Data.hpp                                           :+:      :+:    :+:   */
+/*   Array.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: johuber <johuber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 17:12:47 by marvin            #+#    #+#             */
-/*   Updated: 2026/08/04 17:12:47 by marvin           ###   ########.fr       */
+/*   Updated: 2026/08/07 19:23:35 by johuber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef A_HPP
-# define A_HPP
-# include "Base.hpp"
+#ifndef Array_HPP
+# define Array_HPP
 
-class  A : public Base {};
+template<typename T>
+class  Array
+{
+	
+};
 
 #endif
