@@ -1,9 +1,9 @@
-NAME = convert
+NAME = array
 CC = c++
 CFLAGS = -Wall -Wextra -Werror -MMD -MP -std=c++98
-SRC = main.cpp ScalarConverter.cpp
+SRC = main.cpp
 RM = rm -rf
-OBJS = main.o ScalarConverter.o
+OBJS = main.o
 DEPS = $(SRC:.cpp=.d)
 RED = \033[31m
 RESET = \033[0m

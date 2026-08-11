@@ -12,11 +12,31 @@
 
 #ifndef Array_HPP
 # define Array_HPP
+# include <iostream>
+# include <exception>
 
 template<typename T>
 class  Array
 {
-	
+        private:
+            T               *arr;
+            unsigned int    len;
+    public:
+                            Array();
+                            Array(unsigned int len);
+                            Array(const Array &cpy);
+                            ~Array();
+        Array<T>            &operator = (const Array &cpy);
+		T                   &operator[](unsigned int x);
+		T const             &operator[](unsigned int x) const;
+        unsigned int        size() const;
+		class NoAcessException : public std::exception
+		{
+			public:
+				virtual const char *what() const throw();
+		};
 };
+
+# include "Array.tpp"
 
 #endif
