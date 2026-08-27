@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: johuber <johuber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/11 15:26:45 by marvin            #+#    #+#             */
-/*   Updated: 2026/08/11 15:26:45 by marvin           ###   ########.fr       */
+/*   Updated: 2026/08/26 14:13:10 by johuber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Easyfind.hpp"
+#include "easyfind.hpp"
 
 int main()
 {
