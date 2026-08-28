@@ -32,10 +32,23 @@ class RPN
     public:
         RPN(std::stack<std::string, std::list<std::string> > &numbers);
         ~RPN();
+    private:
+    int                                                     checkToken(std::string token);
     std::string                                             plus(long a, long b);
     std::string                                             minus(long a, long b);
     std::string                                             multi(long a, long b);
-    std::string                                             divide(long a, long b); 
+    std::string                                             divide(long a, long b);
+    void                                                    execute(long a, long b);
+    void                                                    bExecute(long a, long b);
+    std::string	                                            bottom();
+    void    	                                            popBottom();
+    class Error : public std::exception
+	{
+		public:
+			virtual const char *what() const throw();
+	};
 };
+
+
 
 #endif

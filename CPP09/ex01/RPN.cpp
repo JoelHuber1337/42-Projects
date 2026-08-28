@@ -16,41 +16,40 @@ RPN::RPN() {}
 
 RPN::RPN(std::stack<std::string, std::list<std::string> > &numbers)
 {
-	long	a;
-	long	b;
-	while (!numbers.size() != 1)
+	this->numbers = numbers;
+
+	while (this->numbers.size() != 1)
 	{
-		long a = atol(numbers.top().c_str());
-		numbers.pop();
-		long b = atol(numbers.top().c_str());
-		numbers.pop();
-		if (numbers.top() == "+")
+		long a = atol(this->numbers.top().c_str());
+		if (a == 0 && this->numbers.top() != "0")
 		{
-			numbers.pop();
-			numbers.push(RPN::plus(a, b));
+			std::cerr << "Error.\n";
+			return ;
 		}
-		else if (numbers.top() == "-")
+		this->numbers.pop();
+		long b = atol(this->numbers.top().c_str());
+		if (b == 0 && this->numbers.top() != "0")
 		{
-			numbers.pop();
-			numbers.push(RPN::minus(a, b));
+			std::cerr << "Error.\n";
+			return ;
 		}
-		else if (numbers.top() == "*")
+		this->numbers.pop();
+		if (this->numbers.empty())
 		{
-			numbers.pop();
-			numbers.push(RPN::multi(a, b));
+			std::cerr << "Error.\n";
+			return ;
 		}
-		else if (numbers.top() == "/")
-		{
-			numbers.pop();
-			numbers.push(RPN::divide(a, b));
-		}
+		if (checkToken(this->numbers.top()))
+			execute(a, b);
+		else if (checkToken(bottom()))
+			bExecute(a, b);
 		else
 		{
 			std::cerr << "Error.\n";
 			return ;
 		}
 	}
-	std::cout << numbers.top() << std::endl;
+	std::cout << this->numbers.top() << std::endl;
 }
 
 RPN::RPN (RPN &cpy)
@@ -66,20 +65,143 @@ RPN& RPN::operator=(const RPN &cpy)
 	return (*this);
 }
 
-std::string	plus(long a, long b)
+int	RPN::checkToken(std::string token)
+{
+	if (token == "+" || token == "-" || token == "*" || token == "/")
+		return (1);
+	return (0);
+}
+
+void	RPN::execute(long a, long b)
+{
+	if (this->numbers.top() == "+")
+	{
+		this->numbers.pop();
+		this->numbers.push(RPN::plus(a, b));
+	}
+	else if (this->numbers.top() == "-")
+	{
+		this->numbers.pop();
+		this->numbers.push(RPN::minus(a, b));
+	}
+	else if (this->numbers.top() == "*")
+	{
+		this->numbers.pop();
+		this->numbers.push(RPN::multi(a, b));
+	}
+	else if (this->numbers.top() == "/")
+	{
+		this->numbers.pop();
+		this->numbers.push(RPN::divide(a, b));
+	}
+}
+
+void	RPN::bExecute(long a, long b)
+{
+	if (bottom() == "+")
+	{
+		popBottom();
+		numbers.push(RPN::plus(a, b));
+	}
+	else if (bottom() == "-")
+	{
+		popBottom();
+		numbers.push(RPN::minus(a, b));
+	}
+	else if (bottom() == "*")
+	{
+		popBottom();
+		numbers.push(RPN::multi(a, b));
+	}
+	else if (bottom() == "/")
+	{
+		popBottom();
+		numbers.push(RPN::divide(a, b));
+	}
+}
+
+std::string	RPN::plus(long a, long b)
 {
 	long				res;
 	std::stringstream	stream;
 	std::string			str;
 
-	if (a > INT_MAX || b > INT_MAX)
-		//throw_error	
 	res = a + b;
+	if (res > INT_MAX)
+		throw Error();
 	stream << res;
 	str = stream.str();
 	return (str);
 }
 
-    std::string                                             minus(long a, long b);
-    std::string                                             multi(long a, long b);
-    std::string                                             divide(long a, long b);
+std::string	RPN::minus(long a, long b)
+{
+	long				res;
+	std::stringstream	stream;
+	std::string			str;
+
+	res = a - b;
+	if (res < 0)
+		throw Error();
+	stream << res;
+	str = stream.str();
+	return (str);
+}
+
+std::string	RPN::multi(long a, long b)
+{
+	long				res;
+	std::stringstream	stream;
+	std::string			str;
+
+	res = a * b;
+	if (res > INT_MAX)
+		throw Error();
+	stream << res;
+	str = stream.str();
+	return (str);
+}
+
+std::string	RPN::divide(long a, long b)
+{
+	long				res;
+	std::stringstream	stream;
+	std::string			str;
+
+	if (b == 0)
+		throw Error();
+	res = a / b;
+	stream << res;
+	str = stream.str();
+	return (str);
+}
+
+void	RPN::popBottom()
+{
+	std::stack<std::string, std::list<std::string> > tmp;
+
+	while (this->numbers.size() > 1)
+	{
+		tmp.push(this->numbers.top());
+		this->numbers.pop();
+	}
+	this->numbers.pop();
+	while (!tmp.empty())
+	{
+		this->numbers.push(tmp.top());
+		tmp.pop();
+	}
+}
+
+std::string	RPN::bottom()
+{
+	std::stack<std::string, std::list<std::string> > tNumbers = this->numbers;
+	while (tNumbers.size() != 1)
+		tNumbers.pop();
+	return (tNumbers.top());
+}
+
+const char *RPN::Error::what() const throw()
+{
+	return ("Error.\n");
+}

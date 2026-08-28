@@ -12,8 +12,17 @@
 
 #include "RPN.hpp"
 
+int  skipSpaces(std::string line, int x)
+{
+    while (isspace(line[x]) && line[x] && line[x] != '\n')
+        x++;
+    return (x);
+}
+
 int checkInputs(std::string str)
 {
+    if (str == "" || (size_t)skipSpaces(str, 0) == str.size())
+        return (1);
     for (int x = 0; str[x]; x++)
     {
         if (!isspace(str[x]) && !isdigit(str[x]) && str[x] != '*' && str[x] != '-' && str[x] != '+' && str[x] != '/')
@@ -51,7 +60,14 @@ int main (int ac, char **av)
         x--;
         x = revSkipSpaces(str, x);
     }
-    RPN    calc(number);
-
+    try
+    {
+        RPN    calc(number);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what();
+    }
+    
     return (0);
 }
