@@ -6,7 +6,7 @@
 /*   By: johuber <johuber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 13:21:03 by marvin            #+#    #+#             */
-/*   Updated: 2026/08/28 18:18:35 by johuber          ###   ########.fr       */
+/*   Updated: 2026/08/31 19:18:24 by johuber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ int main (int ac, char **av)
     catch(const std::exception& e)
     {
         std::cerr << e.what();
+        return (1);
     }
     
     return (0);

@@ -6,7 +6,7 @@
 /*   By: johuber <johuber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 13:20:57 by marvin            #+#    #+#             */
-/*   Updated: 2026/08/28 19:17:26 by johuber          ###   ########.fr       */
+/*   Updated: 2026/08/31 16:03:35 by johuber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,10 @@ RPN::RPN(std::stack<std::string, std::list<std::string> > &numbers)
 			return ;
 		}
 	}
-	std::cout << this->numbers.top() << std::endl;
+	if (isdigit(this->numbers.top()[0]))
+		std::cout << this->numbers.top() << std::endl;
+	else
+		std::cerr << "Error.\n";
 }
 
 RPN::RPN (RPN &cpy)

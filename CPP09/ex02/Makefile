@@ -1,9 +1,9 @@
-NAME = mutie
+NAME = PmergeMe
 CC = c++
 CFLAGS = -Wall -Wextra -Werror -MMD -MP -std=c++98
-SRC = main.cpp
+SRC = main.cpp PmergeMe.cpp
 RM = rm -rf
-OBJS = main.o
+OBJS = main.o PmergeMe.o
 DEPS = $(SRC:.cpp=.d)
 RED = \033[31m
 RESET = \033[0m
