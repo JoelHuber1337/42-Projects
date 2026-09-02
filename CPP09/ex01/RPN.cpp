@@ -6,7 +6,7 @@
 /*   By: johuber <johuber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 13:20:57 by marvin            #+#    #+#             */
-/*   Updated: 2026/08/31 16:03:35 by johuber          ###   ########.fr       */
+/*   Updated: 2026/09/01 20:46:50 by johuber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ RPN::RPN(std::stack<std::string, std::list<std::string> > &numbers)
 			std::cerr << "Error.\n";
 			return ;
 		}
+		if (isdigit(this->numbers.top()[0]) && this->numbers.size() > 1)
+			b = prioExec(b);
 		if (checkToken(this->numbers.top()))
 			execute(a, b);
 		else if (checkToken(bottom()))
@@ -73,6 +75,35 @@ int	RPN::checkToken(std::string token)
 	if (token == "+" || token == "-" || token == "*" || token == "/")
 		return (1);
 	return (0);
+}
+
+long	RPN::prioExec(long b)
+{
+	long c = atol(this->numbers.top().c_str());
+	this->numbers.pop();
+	if (!checkToken(this->numbers.top()))
+		throw Error();
+	if (this->numbers.top() == "+")
+	{
+		this->numbers.pop();
+		return (atol(RPN::plus(b, c).c_str()));
+	}
+	else if (this->numbers.top() == "-")
+	{
+		this->numbers.pop();
+		return(atol(RPN::minus(b, c).c_str()));
+	}
+	else if (this->numbers.top() == "*")
+	{
+		this->numbers.pop();
+		return(atol(RPN::multi(b, c).c_str()));
+	}
+	else if (this->numbers.top() == "/")
+	{
+		this->numbers.pop();
+		return(atol(RPN::divide(b, c).c_str()));
+	}
+	throw Error();
 }
 
 void	RPN::execute(long a, long b)

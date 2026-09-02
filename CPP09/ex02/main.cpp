@@ -6,7 +6,7 @@
 /*   By: johuber <johuber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/31 16:06:20 by johuber           #+#    #+#             */
-/*   Updated: 2026/08/31 18:29:32 by johuber          ###   ########.fr       */
+/*   Updated: 2026/09/01 15:36:25 by johuber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ int	inputChecks(std::string str)
 	for (int x = 0; str[x]; x++)
 		if (!isdigit(str[x]))
 			return (std::cerr << "Error\n", 1);
-
 	long	res = atol(str.c_str());
 	if (res == 0 && str[0] != '0')
 		return (std::cerr << "Error\n", 1);

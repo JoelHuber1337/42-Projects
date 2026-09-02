@@ -6,7 +6,7 @@
 /*   By: johuber <johuber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 17:12:47 by marvin            #+#    #+#             */
-/*   Updated: 2026/08/28 19:11:12 by johuber          ###   ########.fr       */
+/*   Updated: 2026/09/01 20:25:49 by johuber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ class RPN
     std::string                                             minus(long a, long b);
     std::string                                             multi(long a, long b);
     std::string                                             divide(long a, long b);
+    long                                                    prioExec(long b);
     void                                                    execute(long a, long b);
     void                                                    bExecute(long a, long b);
     std::string	                                            bottom();
