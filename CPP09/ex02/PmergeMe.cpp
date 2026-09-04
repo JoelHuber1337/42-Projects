@@ -13,14 +13,14 @@
 #include "PmergeMe.hpp"
 #include <unistd.h>
 
-void	vecRecSplitSort(std::vector<pair> &pairs)
+void	vecRecSplitSort(std::vector<pair> &pairs, std::vector<pair> &res)
 {
 	std::vector<pair>	tmp;
 	
-	for (size_t x = 0; x + 1 < pairs.size(); x += 2)
+	for (size_t x = 0; x + 1 < pairs.size(); x++)
 	{
 		pair	res;
-		if (pairs[x].larger > pairs[x + 1].larger)
+		if (pairs[x].larger < pairs[x + 1].larger)
 		{
 			res.larger = (pairs[x]).larger;
 			res.smaller = (pairs[x]).smaller;
@@ -35,11 +35,14 @@ void	vecRecSplitSort(std::vector<pair> &pairs)
 		tmp.push_back(res);
 	}
 	if (pairs.size() > 1)
-		vecRecSplitSort(pairs);
+		vecRecSplitSort(pairs, res); 
 	if (tmp.size() > 1)
-		vecRecSplitSort(pairs);
-	std::cout << "tmp ->" << tmp[0].larger << "\n";
+		vecRecSplitSort(tmp, res);
+	
 	std::cout << "pairs ->" << pairs[0].larger << "\n";
+	std::cout << "tmp ->" << tmp[0].larger << "\n";
+	res.push_back(pairs[0]);
+	pairs.pop_back();
 }
 
 void	vecAlgo(std::vector<int> &vec)
@@ -47,6 +50,7 @@ void	vecAlgo(std::vector<int> &vec)
 	std::vector<pair>	pairs;
 	bool				isLast = vec.size() % 2 != 0;
 	int					last = 0;
+	std::vector<pair>	res;
 
 	for (size_t x = 0; x + 1 < vec.size(); x += 2)
 	{
@@ -66,8 +70,12 @@ void	vecAlgo(std::vector<int> &vec)
 	}
 	if (isLast)
 		last = vec.back();
+	(void)last;
 	if (pairs.size() > 1)
-		vecRecSplitSort(pairs);
+		vecRecSplitSort(pairs, res);
+	std::cout << pairs.size() << "\n";
+	//for (size_t x = 0; x < pairs.size(); x++)
+	//	std::cout << "Res -> " << pairs[x].larger << " " << pairs[x].smaller << "\n";
 }
 
 void	vecDataManagment(char **str)
