@@ -6,7 +6,7 @@
 /*   By: johuber <johuber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 17:12:47 by marvin            #+#    #+#             */
-/*   Updated: 2026/09/02 17:26:03 by johuber          ###   ########.fr       */
+/*   Updated: 2026/09/04 18:05:04 by johuber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,10 @@
 # include <ctime>
 # include <iomanip>
 # include <utility>
+# include <cmath>
+
+extern int	deqCount;
+extern int	vecCount;
 
 struct pair
 {

@@ -6,11 +6,14 @@
 /*   By: johuber <johuber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/31 16:06:20 by johuber           #+#    #+#             */
-/*   Updated: 2026/09/01 15:36:25 by johuber          ###   ########.fr       */
+/*   Updated: 2026/09/04 18:01:13 by johuber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
+
+int			vecCount = 0;
+int			deqCount = 0;
 
 int	inputChecks(std::string str)
 {

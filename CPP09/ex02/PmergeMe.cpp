@@ -6,14 +6,56 @@
 /*   By: johuber <johuber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 13:20:57 by marvin            #+#    #+#             */
-/*   Updated: 2026/09/02 18:05:30 by johuber          ###   ########.fr       */
+/*   Updated: 2026/09/04 19:14:09 by johuber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
 #include <unistd.h>
 
-void	vecRecSplitSort(std::vector<pair> &pairs, std::vector<pair> &res)
+void	vecSwap(std::vector<int> &vec, int start, int end)
+{
+	std::vector<int>	tmp;
+	std::vector<int>	tmp2;
+	int 				x = 0;
+
+	while (x + start < end)
+	{
+		tmp.push_back(vec[x + start]);
+		x++;
+	}
+	x = 0;
+	while (x + start < end)
+	{
+		tmp2.push_back(vec[x + end]);
+		vec[x + end] = tmp[x];
+		x++;
+	}
+	x = 0;
+	while (x + start < end)
+	{
+		vec[x + start] = tmp2[x];
+		x++;
+	}
+}
+
+int	deqIsSmaller(int x, int y)
+{
+	deqCount++;
+	if (x < y)
+		return (1);
+	return (0);
+}
+
+int	vecIsSmaller(int x, int y)
+{
+	vecCount++;
+	if (x < y)
+		return (1);
+	return (0);
+}
+
+void	vecRecSplitSort(std::vector<pair> pairs, std::vector<pair> &res)
 {
 	std::vector<pair>	tmp;
 	
@@ -35,53 +77,46 @@ void	vecRecSplitSort(std::vector<pair> &pairs, std::vector<pair> &res)
 		tmp.push_back(res);
 	}
 	if (pairs.size() > 1)
-		vecRecSplitSort(pairs, res); 
+		vecRecSplitSort(pairs, res);
 	if (tmp.size() > 1)
 		vecRecSplitSort(tmp, res);
 	
 	std::cout << "pairs ->" << pairs[0].larger << "\n";
 	std::cout << "tmp ->" << tmp[0].larger << "\n";
 	res.push_back(pairs[0]);
-	pairs.pop_back();
 }
 
-void	vecAlgo(std::vector<int> &vec)
+std::vector<int>	vecAlgo(std::vector<int> vec, int Flevel)
 {
-	std::vector<pair>	pairs;
+	if (vec.size() == 1)
+		return (vec);
 	bool				isLast = vec.size() % 2 != 0;
 	int					last = 0;
-	std::vector<pair>	res;
+	int					level = pow(2, Flevel);
 
-	for (size_t x = 0; x + 1 < vec.size(); x += 2)
+	for (size_t x = 0; x + (level * 2) < vec.size() - (level * isLast); x += 2 * level)
 	{
-		pair	res;
 	
-		if (vec[x] > vec[x + 1])
-		{
-			res.larger = vec[x];
-			res.smaller = vec[x + 1];
-		}
-		else
-		{
-			res.smaller = vec[x];
-			res.larger = vec[x + 1];
-		}
-		pairs.push_back(res);
+		if (vecIsSmaller(vec[x], vec[x + level]))
+			vecSwap(vec, x, x + level);
 	}
 	if (isLast)
 		last = vec.back();
 	(void)last;
+	for (size_t x = 0; x < pairs.size(); x++)
+		std::cout << "Pairs -> " << pairs[x].larger << "\n" << pairs[x].smaller << "\n";
 	if (pairs.size() > 1)
 		vecRecSplitSort(pairs, res);
 	std::cout << pairs.size() << "\n";
-	//for (size_t x = 0; x < pairs.size(); x++)
-	//	std::cout << "Res -> " << pairs[x].larger << " " << pairs[x].smaller << "\n";
+	for (size_t x = 0; x < res.size(); x++)
+		std::cout << "Res -> " << res[x].larger << " " << res[x].smaller << "\n";
 }
 
 void	vecDataManagment(char **str)
 {
 	std::clock_t		start = std::clock();
 	std::vector<int>	vec;
+	std::deque<int>		deq;
 	
 	std::cout << "Before:\t"; 
 	for (int x = 1; str[x]; x++)
@@ -92,7 +127,7 @@ void	vecDataManagment(char **str)
 			std::cout << " ";
 	}
 	std::cout << "\n";
-	vecAlgo(vec);
+	vecAlgo(vec, 0);
 	std::cout << "After:\t";
 	for (std::vector<int>::iterator	it = vec.begin(); it != vec.end(); it++)
 	{
