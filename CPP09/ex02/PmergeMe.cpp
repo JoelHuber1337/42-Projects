@@ -55,6 +55,7 @@ int	vecIsSmaller(int x, int y)
 	return (0);
 }
 
+/*
 void	vecRecSplitSort(std::vector<pair> pairs, std::vector<pair> &res)
 {
 	std::vector<pair>	tmp;
@@ -85,31 +86,56 @@ void	vecRecSplitSort(std::vector<pair> pairs, std::vector<pair> &res)
 	std::cout << "tmp ->" << tmp[0].larger << "\n";
 	res.push_back(pairs[0]);
 }
+*/
 
-std::vector<int>	vecAlgo(std::vector<int> vec, int Flevel)
+std::vector<int>	vecAlgo(std::vector<int> vec)
 {
-	if (vec.size() == 1)
+	if (vec.size() < 2)
 		return (vec);
 	bool				isLast = vec.size() % 2 != 0;
 	int					last = 0;
-	int					level = pow(2, Flevel);
 
-	for (size_t x = 0; x + (level * 2) < vec.size() - (level * isLast); x += 2 * level)
+	if (isLast)
+	{
+		last = vec.back();
+		vec.pop_back();
+	}
+	std::vector<int>	biggers(vec.size() / 2);
+	std::vector<losers>	smallers;
+
+	for (size_t x = 0; x + 1 < vec.size(); x += 2 )
 	{
 	
-		if (vecIsSmaller(vec[x], vec[x + level]))
-			vecSwap(vec, x, x + level);
+		if (vecIsSmaller(vec[x], vec[x + 1]))
+		{
+			biggers[x / 2] = vec[x + 1];
+			losers	tmp = {vec[x], x / 2};
+			smallers[x / 2] = tmp;
+		}
+		else
+		{
+			biggers[x / 2] = vec[x];
+			losers	tmp = {vec[x + 1], x / 2};
+			smallers[x / 2] = tmp;
+		}
 	}
+	std::vector<int>	mainChain = vecAlgo(biggers);
+	mainChain.insert(mainChain.begin(), smallers[smallers[0].id].value);
+	std::vector<int>	jacobNums;
+	jacobNums.push_back(1);
+	jacobNums.push_back(1);
+	while (jacobNums.back() < vec.size() / 2 > 1)
+		jacobNums.push_back(jacobNums[jacobNums.size() - 1] + 2 * jacobNums[jacobNums.size() - 2]);
+
 	if (isLast)
-		last = vec.back();
-	(void)last;
-	for (size_t x = 0; x < pairs.size(); x++)
-		std::cout << "Pairs -> " << pairs[x].larger << "\n" << pairs[x].smaller << "\n";
-	if (pairs.size() > 1)
-		vecRecSplitSort(pairs, res);
-	std::cout << pairs.size() << "\n";
-	for (size_t x = 0; x < res.size(); x++)
-		std::cout << "Res -> " << res[x].larger << " " << res[x].smaller << "\n";
+	{
+
+	}
+	if (vec.size() / 2 > 1)
+	{
+		
+	}
+	return (vec);
 }
 
 void	vecDataManagment(char **str)
@@ -127,7 +153,7 @@ void	vecDataManagment(char **str)
 			std::cout << " ";
 	}
 	std::cout << "\n";
-	vecAlgo(vec, 0);
+	vecAlgo(vec);
 	std::cout << "After:\t";
 	for (std::vector<int>::iterator	it = vec.begin(); it != vec.end(); it++)
 	{

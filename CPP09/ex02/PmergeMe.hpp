@@ -27,10 +27,10 @@
 extern int	deqCount;
 extern int	vecCount;
 
-struct pair
+struct losers
 {
-	int larger;
-	int smaller;
+	int value;
+	size_t id;
 };
 
 void						vecDataManagment(char **str);
