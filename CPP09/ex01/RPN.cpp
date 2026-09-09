@@ -14,6 +14,45 @@
 
 RPN::RPN() {}
 
+RPN::RPN(std::stack<std::string, std::list<std::string> > &input)
+{
+	std::stack<std::string, std::list<std::string> > stack;
+
+	while (!input.empty())
+	{
+		if (isdigit(input.top()[0]))
+		{
+			stack.push(input.top());
+			input.pop();
+		}
+		if (isdigit(input.top()[0]))
+		{
+			stack.push(input.top());
+			input.pop();
+		}
+		if (checkToken(input.top()))
+		{
+			if (stack.size() < 2)
+			{
+				std::cerr << "Error\n";
+				return ;
+			}
+			long b = atol(stack.top().c_str());
+			stack.pop();
+			long a = atol(stack.top().c_str());
+			stack.pop();
+			stack.push(input.top());
+			input.pop();
+			this->numbers = stack;
+			execute(a, b);
+			stack = this->numbers;
+		}
+	}
+	std::cout << "hey\n";
+	std::cout << this->numbers.top() << std::endl;
+}
+
+/*
 RPN::RPN(std::stack<std::string, std::list<std::string> > &numbers)
 {
 	this->numbers = numbers;
@@ -39,15 +78,18 @@ RPN::RPN(std::stack<std::string, std::list<std::string> > &numbers)
 			std::cerr << "Error.\n";
 			return ;
 		}
-		if (isdigit(this->numbers.top()[0]) && this->numbers.size() > 1)
-			b = prioExec(b);
+		if (isdigit(this->numbers.top()[0]) && this->numbers.size() > 2)
+			b = prioExec(this->numbers, b);
 		if (checkToken(this->numbers.top()))
 			execute(a, b);
 		else if (checkToken(bottom()))
+		{
 			bExecute(a, b);
+		}
 		else
 		{
-			std::cerr << "Error.\n";
+			std::cout << a << "\n";
+			std::cerr << "HeyError.\n";
 			return ;
 		}
 	}
@@ -56,7 +98,7 @@ RPN::RPN(std::stack<std::string, std::list<std::string> > &numbers)
 	else
 		std::cerr << "Error.\n";
 }
-
+*/
 RPN::RPN (RPN &cpy)
 {
 	(void)cpy;
@@ -77,12 +119,13 @@ int	RPN::checkToken(std::string token)
 	return (0);
 }
 
-long	RPN::prioExec(long b)
+long	RPN::prioExec(std::stack<std::string, std::list<std::string> > tmpnum, long b)
 {
+	tmpnum.pop();
+	if (!checkToken(tmpnum.top()))
+		return (b);
 	long c = atol(this->numbers.top().c_str());
 	this->numbers.pop();
-	if (!checkToken(this->numbers.top()))
-		throw Error();
 	if (this->numbers.top() == "+")
 	{
 		this->numbers.pop();

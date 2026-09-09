@@ -38,7 +38,7 @@ class RPN
     std::string                                             minus(long a, long b);
     std::string                                             multi(long a, long b);
     std::string                                             divide(long a, long b);
-    long                                                    prioExec(long b);
+    long	                                                prioExec(std::stack<std::string, std::list<std::string> > tmpnum, long b);
     void                                                    execute(long a, long b);
     void                                                    bExecute(long a, long b);
     std::string	                                            bottom();
