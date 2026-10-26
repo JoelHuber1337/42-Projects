@@ -2,7 +2,7 @@ FROM alpine:3.23
 
 # The TCP port PHP-FPM listens on.
 # Keep this in sync with the listen setting in php-fpm.conf.
-ENV WORDPRESS_FPM_PORT=9000
+ENV WORDPRESS_NGINX_PORT=9000
 
 # fcgi: provides cgi-fcgi for the healthcheck.
 # php85: PHP runtime and command-line interpreter.
@@ -55,17 +55,13 @@ RUN set -eux; \
         php85-iconv \
         php85-tokenizer \
         php85-session \
-        php85-ctype
-
-# Create a dedicated account for WordPress and PHP-FPM workers.
-# Provide unversioned executable names for scripts and the CMD.
-RUN set -eux; \
-    addgroup -S -g 1000 wordpress; \
-    adduser -S -D -H -u 1000 -G wordpress wordpress; \
-    ln -sf /usr/bin/php85 /usr/bin/php; \
-    ln -sf /usr/sbin/php-fpm85 /usr/sbin/php-fpm; \
-    mkdir -p /var/www/html /tmp/wp-cli-home; \
-    chown wordpress:wordpress /tmp/wp-cli-home
+        php85-ctype \
+        php85-hash \
+        php85-igbinary \
+        php85-imagick \
+        php85-intl \
+        php85-timezonedb \
+        ;
 
 # Download WordPress and install WP-CLI.
 # GPG and gpg-agent are temporary build dependencies.
@@ -73,18 +69,12 @@ RUN set -eux; \
 RUN set -eux; \
     apk add --no-cache --virtual .build \
         gpg \
-        gpg-agent; \
+        gpg-agent \
+        wget; \
     \
     GNUPGHOME="$(mktemp -d)"; \
     export GNUPGHOME; \
     chmod 700 "$GNUPGHOME"; \
-    \
-    wget -q -O /tmp/wordpress.tar.gz \
-        https://wordpress.org/latest.tar.gz; \
-    tar -xzf /tmp/wordpress.tar.gz \
-        --strip-components=1 \
-        -C /var/www/html; \
-    \
     wget -q -O /tmp/wp-cli.phar \
         https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar; \
     wget -q -O /tmp/wp-cli.phar.asc \
@@ -93,9 +83,15 @@ RUN set -eux; \
         https://raw.githubusercontent.com/wp-cli/builds/gh-pages/wp-cli.pgp; \
     \
     gpg --batch --import /tmp/wp-cli.pgp; \
-    fingerprint="$(gpg --batch --with-colons --fingerprint releases@wp-cli.org \
-        | awk -F: '$1 == "fpr" { print $10; exit }')"; \
-    test "$fingerprint" = "63AF7AA15067C05616FDDD88A3A2E8F226F0BC06"; \
+    gpg --batch --with-colons --list-keys --with-fingerprint \
+    | awk -F: ' \
+        $1 == "pub" { primary = 1; next } \
+        $1 == "sub" { primary = 0; next } \
+        $1 == "fpr" && primary && \
+        $10 == "63AF7AA15067C05616FDDD88A3A2E8F226F0BC06" { \
+            found = 1 \
+        } \
+        END { exit !found }'; \
     gpg --batch --verify /tmp/wp-cli.phar.asc /tmp/wp-cli.phar; \
     \
     install -m 755 /tmp/wp-cli.phar /usr/local/bin/wp; \
@@ -103,7 +99,6 @@ RUN set -eux; \
     \
     gpgconf --kill all || true; \
     rm -rf "$GNUPGHOME" \
-        /tmp/wordpress.tar.gz \
         /tmp/wp-cli.phar \
         /tmp/wp-cli.phar.asc \
         /tmp/wp-cli.pgp; \
@@ -124,13 +119,13 @@ RUN set -eux; \
 WORKDIR /var/www/html
 
 # Document the FastCGI port used by the Nginx container.
-EXPOSE 9000
+EXPOSE $(WORDPRESS_NGINX_PORT)
 
 # Check the FastCGI ping endpoint, not an ordinary PHP page.
 # The endpoint must be enabled in the PHP-FPM pool configuration.
 HEALTHCHECK --start-period=30s --interval=30s --timeout=5s --retries=3 \
     CMD SCRIPT_NAME=/ping SCRIPT_FILENAME=/ping REQUEST_METHOD=GET \
-        cgi-fcgi -bind -connect "127.0.0.1:${WORDPRESS_FPM_PORT}" \
+        cgi-fcgi -bind -connect "127.0.0.1:${WORDPRESS_NGINX_PORT}" \
         | grep -q pong
 
 # Let the entrypoint initialize WordPress before starting PHP-FPM.
