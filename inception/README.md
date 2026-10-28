@@ -22,3 +22,6 @@ PHP extensions are added as by this list, verything recommended is in this build
 https://make.wordpress.org/hosting/handbook/server-environment/#php-extensions
 
 GPG/GPG Agent is used to verify download files and the fingerprint with wp-cli, also checking that the expected fingerprint is the PRIMARY one.
+
+How to download WP with WPCLI
+https://make.wordpress.org/cli/handbook/how-to/how-to-install/

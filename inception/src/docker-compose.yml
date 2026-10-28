@@ -1,1 +1,75 @@
 name: inception
+
+services:
+  nginx:
+    build:
+      context: ./requirements/nginx
+      dockerfile: Dockerfile
+    image: nginx
+    depends_on:
+      wordpress:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes: wordpress:/var/www/html:rw
+    ports: 443:443
+    networks: inception
+    env_file: .env
+    healthcheck:
+      test: ["CMD", "bash", "-c", "/opt/run/tools/healtcheck.sh"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+  
+  mariadb:
+    build: 
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    image: mariadb
+    restart: unless-stopped
+    volumes: mariadb:/var/lib/mysql:rw
+    networks: inception
+    env_file: .env
+    healthcheck:
+      test: ["CMD", "bash", "-c", "/usr/local/bin/mariadb_healthcheck.sh"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  
+  wordpress:
+    build: 
+      context: ./requirements/wordpress
+      dockerfile: Dockerfile
+    image: wordpress
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes: wordpress:/var/www/html:rw
+    networks: inception
+    env_file: .env
+    healthcheck:
+      test: ["CMD-SHELL", "bash", "-c", "/usr/local/bin/wp_healthcheck.sh"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+networks:
+  inception:
+    driver: bridge
+
+volumes:
+  mariadb:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/johuber/data/mariadb
+      o: bind
+  
+  wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/johuber/data/wordpress
+      o: bind
+

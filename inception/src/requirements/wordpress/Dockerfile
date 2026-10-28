@@ -1,9 +1,5 @@
 FROM alpine:3.23
 
-# The TCP port PHP-FPM listens on.
-# Keep this in sync with the listen setting in php-fpm.conf.
-ENV WORDPRESS_NGINX_PORT=9000
-
 # fcgi: provides cgi-fcgi for the healthcheck.
 # php85: PHP runtime and command-line interpreter.
 # php85-fpm: runs PHP scripts through FastCGI.
@@ -88,13 +84,13 @@ RUN set -eux; \
         $1 == "pub" { primary = 1; next } \
         $1 == "sub" { primary = 0; next } \
         $1 == "fpr" && primary && \
-        $10 == "63AF7AA15067C05616FDDD88A3A2E8F226F0BC06" { \
+        $10 == $(WP_CLI_FP) { \
             found = 1 \
         } \
         END { exit !found }'; \
     gpg --batch --verify /tmp/wp-cli.phar.asc /tmp/wp-cli.phar; \
     \
-    install -m 755 /tmp/wp-cli.phar /usr/local/bin/wp; \
+    install -m 777 /tmp/wp-cli.phar /usr/local/bin/wp; \
     php /usr/local/bin/wp --info > /dev/null; \
     \
     gpgconf --kill all || true; \
@@ -105,30 +101,19 @@ RUN set -eux; \
     apk del .build
 
 # Install your own PHP and WP-CLI configuration.
-COPY ./config/php.ini /etc/php85/conf.d/99_inception.ini
 COPY ./config/php-fpm.conf /etc/php85/php-fpm.d/www.conf
-COPY --chown=wordpress:wordpress ./config/wp-cli.yml /var/www/html/wp-cli.yml
-COPY --chmod=755 ./config/entry.sh /usr/local/bin/entrypoint
+COPY ./config/php.ini /etc/php85/conf.d/php_conf.ini
+COPY --chmod=777 ./config/entry.sh /usr/local/bin/entrypoint
+COPY --chmod=777 ./config/healthcheck.sh /usr/local/bin/wp_healthcheck.sh
 
-# Allow the wordpress account to read and manage its WordPress files.
-# This also allows the entrypoint to create wp-config.php as that user.
-RUN set -eux; \
-    chown -R wordpress:wordpress /var/www/html; \
-    php-fpm -t
-
-WORKDIR /var/www/html
+#working directory for the finished WP installation
+RUN mkdir -p $(WP_DIR)
 
 # Document the FastCGI port used by the Nginx container.
-EXPOSE $(WORDPRESS_NGINX_PORT)
+EXPOSE $(WP_NGINX_PORT)
 
-# Check the FastCGI ping endpoint, not an ordinary PHP page.
-# The endpoint must be enabled in the PHP-FPM pool configuration.
-HEALTHCHECK --start-period=30s --interval=30s --timeout=5s --retries=3 \
-    CMD SCRIPT_NAME=/ping SCRIPT_FILENAME=/ping REQUEST_METHOD=GET \
-        cgi-fcgi -bind -connect "127.0.0.1:${WORDPRESS_NGINX_PORT}" \
-        | grep -q pong
+WORKDIR $(WP_DIR)
 
 # Let the entrypoint initialize WordPress before starting PHP-FPM.
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
 CMD ["php-fpm", "-F"]
-
