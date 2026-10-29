@@ -10,7 +10,7 @@ port = ${MARIADB_PORT}
 socket = /run/mysqld/mysql.sock
 
 [client]
-password = $DB_PWD
+password = ${DB_PWD}
 
 [server]
 user = mysql
@@ -31,19 +31,21 @@ fi
 echo "Checking if Mariadb is set up with WP"
 if [ ! -d "/var/lib/mysql/${DB_NAME}" ]; then
 	echo "WP is not set up in MariaDB, setting up..."
-	mariadbd --bootstrap << EOF
+	cat > /tmp/tmp.conf << EOF
 FLUSH PRIVILEGES;
 
-ALTER USER `root`@`localhost` IDENTIFIED BY '${DB_ROOT_PWD}';
+ALTER USER \`root\`@\`localhost\` IDENTIFIED BY '${DB_ROOT_PWD}';
 
-CREATE DATABASE IF NOT EXISTS `${DB_NAME}`;
+CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;
 
-CREATE USER IF NOT EXISTS `${DB_USER}`@`%` IDENTIFIED BY '${DB_PWD}';
+CREATE USER IF NOT EXISTS \`${DB_USER}\`@\`%\` IDENTIFIED BY '${DB_PWD}';
 
-GRANT ALL PRIVILEGES ON `${DB_NAME}`.* TO `${DB_USER}`@`%`;
+GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO \`${DB_USER}\`@\`%\`;
 
 FLUSH PRIVILEGES;
 EOF
+	mariadbd --bootstrap < /tmp/tmp.conf
+	rm -r /tmp/tmp.conf
 	echo "Mariadb set up and bootstrapped"
 else
 	echo "Mariadb is set up with wordpress!"

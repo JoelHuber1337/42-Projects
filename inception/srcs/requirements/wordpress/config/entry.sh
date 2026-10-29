@@ -4,7 +4,7 @@ echo "WP Entry Script called..."
 
 echo "Checking if WP is installed"
 if ! wp core version  --allow-root > /dev/null 2>&1; then
-    echo "WP is not installed, installing WP version $(WP_VERSION)"
+    echo "WP is not installed, installing WP version ${WP_VERSION}"
     wp core download --version="$WP_VERSION" --allow-root
 else
     echo "WP is installed"
@@ -23,21 +23,21 @@ else
     echo "WP Config exists."
 fi
 
-echo "Waiting for mariadb..."
+# echo "Waiting for mariadb..."
 
-attempt=1
-while ! wp db check --allow-root > /dev/null 2>&1; do
-    if ["$attempt" -ge 60 ]; then
-        echo "WP couldn't connect to mariadb after 60 tries"
-        exit 1
-    fi
+# attempt=1
+# while ! wp db check --allow-root > /dev/null 2>&1; do
+#     if [ "$attempt" -ge 60 ]; then
+#         echo "WP couldn't connect to mariadb after 60 tries"
+#         exit 1
+#     fi
 
-    echo "WP connection to mariadb failed, retrying..."
-    attempt=$((attempt + 1))
-    sleep 1
-done
+#     echo "WP connection to mariadb failed, retrying..."
+#     attempt=$((attempt + 1))
+#     sleep 1
+# done
 
-echo "WP successfully connected to mariadb"
+# echo "WP successfully connected to mariadb"
 
 echo "Checking WP Website Configs..."
 if ! wp core is-installed --path="$WP_DIR" --allow-root 2>/dev/null; then

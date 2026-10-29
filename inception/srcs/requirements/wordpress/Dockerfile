@@ -1,5 +1,8 @@
 FROM alpine:3.23
 
+ARG WP_CLI_FP
+ARG WP_DIR
+
 # fcgi: provides cgi-fcgi for the healthcheck.
 # php85: PHP runtime and command-line interpreter.
 # php85-fpm: runs PHP scripts through FastCGI.
@@ -52,11 +55,9 @@ RUN set -eux; \
         php85-tokenizer \
         php85-session \
         php85-ctype \
-        php85-hash \
-        php85-igbinary \
-        php85-imagick \
+        php85-pecl-igbinary \
+        php85-pecl-imagick  \
         php85-intl \
-        php85-timezonedb \
         ;
 
 # Download WordPress and install WP-CLI.
@@ -80,18 +81,18 @@ RUN set -eux; \
     \
     gpg --batch --import /tmp/wp-cli.pgp; \
     gpg --batch --with-colons --list-keys --with-fingerprint \
-    | awk -F: ' \
+    | awk -F: -v expected="${WP_CLI_FP}" ' \
         $1 == "pub" { primary = 1; next } \
         $1 == "sub" { primary = 0; next } \
         $1 == "fpr" && primary && \
-        $10 == $(WP_CLI_FP) { \
+        $10 == expected { \
             found = 1 \
         } \
         END { exit !found }'; \
     gpg --batch --verify /tmp/wp-cli.phar.asc /tmp/wp-cli.phar; \
     \
     install -m 777 /tmp/wp-cli.phar /usr/local/bin/wp; \
-    php /usr/local/bin/wp --info > /dev/null; \
+    php85 /usr/local/bin/wp --info > /dev/null; \
     \
     gpgconf --kill all || true; \
     rm -rf "$GNUPGHOME" \
@@ -107,12 +108,15 @@ COPY --chmod=777 ./config/entry.sh /usr/local/bin/entrypoint
 COPY --chmod=777 ./config/healthcheck.sh /usr/local/bin/wp_healthcheck.sh
 
 #working directory for the finished WP installation
-RUN mkdir -p $(WP_DIR)
+RUN mkdir -p ${WP_DIR}; \
+    ln -s /usr/bin/php85 /usr/bin/php; \
+    ln -s /usr/sbin/php-fpm85 /usr/sbin/php-fpm; \
+    adduser -u 1000 -H -D -S wordpress;
 
 # Document the FastCGI port used by the Nginx container.
-EXPOSE $(WP_NGINX_PORT)
+EXPOSE ${WP_NGINX_PORT}
 
-WORKDIR $(WP_DIR)
+WORKDIR ${WP_DIR}
 
 # Let the entrypoint initialize WordPress before starting PHP-FPM.
 ENTRYPOINT ["/usr/local/bin/entrypoint"]

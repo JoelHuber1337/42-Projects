@@ -10,34 +10,44 @@ services:
       wordpress:
         condition: service_healthy
     restart: unless-stopped
-    volumes: wordpress:/var/www/html:rw
-    ports: 443:443
-    networks: inception
+    volumes:
+      - wordpress:/var/www/html:rw
+    ports:
+      - 443:443
+    networks: 
+      - inception
     env_file: .env
     healthcheck:
-      test: ["CMD", "bash", "-c", "/usr/local/bin/nginx_healthcheck.sh"]
+      test: ["CMD", "/bin/sh", "-c", "/usr/local/bin/nginx_healthcheck.sh"]
       interval: 30s
       timeout: 5s
       retries: 5
   
   mariadb:
-    build: 
+    build:
+      args:
+        MARIADB_VERSION: ${MARIADB_VERSION}
       context: ./requirements/mariadb
       dockerfile: Dockerfile
     image: mariadb
     restart: unless-stopped
-    volumes: mariadb:/var/lib/mysql:rw
-    networks: inception
+    volumes:
+      - mariadb:/var/lib/mysql:rw
+    networks: 
+      - inception
     env_file: .env
     healthcheck:
-      test: ["CMD", "bash", "-c", "/usr/local/bin/mariadb_healthcheck.sh"]
+      test: ["CMD", "/bin/sh", "-c", "/usr/local/bin/mariadb_healthcheck.sh"]
       interval: 30s
       timeout: 5s
       retries: 5
       start_period: 30s
   
   wordpress:
-    build: 
+    build:
+      args:
+        WP_CLI_FP: ${WP_CLI_FP}
+        WP_DIR: ${WP_DIR}
       context: ./requirements/wordpress
       dockerfile: Dockerfile
     image: wordpress
@@ -45,11 +55,13 @@ services:
       mariadb:
         condition: service_healthy
     restart: unless-stopped
-    volumes: wordpress:/var/www/html:rw
-    networks: inception
+    volumes:
+      - wordpress:/var/www/html:rw
+    networks:
+      - inception
     env_file: .env
     healthcheck:
-      test: ["CMD-SHELL", "bash", "-c", "/usr/local/bin/wp_healthcheck.sh"]
+      test: ["CMD-SHELL", "/bin/sh", "-c", "/usr/local/bin/wp_healthcheck.sh"]
       interval: 30s
       timeout: 5s
       retries: 5

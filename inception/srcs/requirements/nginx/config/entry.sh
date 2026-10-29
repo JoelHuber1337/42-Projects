@@ -49,17 +49,17 @@ server {
     index index.php index.html;
 
     location / {
-        try_files $uri $uri/ /index.php?$args;
+        try_files $$uri $$uri/ /index.php?$$args;
     }
 
-    location ~ \.php$ {
+    location ~ \.php$$ {
         include fastcgi_params;
         fastcgi_pass wordpress:${WP_NGINX_PORT};
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-		fastcgi_param	HTTPS			$https;
+        fastcgi_param SCRIPT_FILENAME $$document_root$$fastcgi_script_name;
+		fastcgi_param	HTTPS			$$https;
     }
 
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$$ {
         expires 30d;
         add_header Cache-Control "public, immutable";
     }
