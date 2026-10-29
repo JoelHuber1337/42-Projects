@@ -15,7 +15,7 @@ services:
     networks: inception
     env_file: .env
     healthcheck:
-      test: ["CMD", "bash", "-c", "/opt/run/tools/healtcheck.sh"]
+      test: ["CMD", "bash", "-c", "/usr/local/bin/nginx_healthcheck.sh"]
       interval: 30s
       timeout: 5s
       retries: 5

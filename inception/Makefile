@@ -1,37 +1,44 @@
-NAME = PmergeMe
-CC = c++
-CFLAGS = -Wall -Wextra -Werror -MMD -MP -std=c++98
-SRC = main.cpp PmergeMe.cpp
-RM = rm -rf
-OBJS = main.o PmergeMe.o
-DEPS = $(SRC:.cpp=.d)
+NAME = inception
+COMPOSER = srcs/docker-compose.yml
+COMPOSITION = docker compose -f $(COMPOSER)
+
 RED = \033[31m
 RESET = \033[0m
 
-all: $(NAME)
+all: build up
 
-%.o: %.cpp
-	@$(CC) $(CFLAGS) -c $< -o $@
-	@echo "$(GREEN) ⭐️ COMPILING ⭐️$(RESET)"
+env:
+	@if [ ! -f srcs/.env ]; then \
+		printf "$(RED)MISSING ENV VARIABLES !!!!$(RESET)\n"; \
+		exit 1; \
+	fi
 
-$(NAME): $(OBJS)
-	@echo "$(GREEN)      🌟 Linking 🌟$(RESET)"
-	@$(CC) $(CFLAGS) $(LFLAGS) -o $(NAME) $(OBJS) $(LIBFT_LIB) 
-	@echo "$(GREEN)💫 Compiled successfully! 💫$(RESET)"
+build: env
+	$(COMPOSITION) build
 
-clean:
-	@echo "$(RED)     🚀  Cleaning 🚀$(RESET)"
-	@$(RM) $(OBJS)
-	@$(RM) $(DEPS)
-	@echo "$(GREEN)       🛸 Done! 🛸$(RESET)"
+up: env
+	$(COMPOSITION) up -d
 
-fclean: clean
-	@echo "$(RED)     🚀  Fcleaning 🚀$(RESET)"
-	@$(RM) $(NAME)
-	@echo "$(GREEN)       🛸 Done! 🛸$(RESET)"
+down: env
+	$(COMPOSITION) down
 
-re: fclean all
+stop: env
+	$(COMPOSITION) stop
 
--include $(DEPS)
+start: env
+	$(COMPOSITION) start
 
-.PHONY: all clean fclean re
+restart: stop start
+
+logs: env
+	$(COMPOSITION) logs -f
+
+clean: env down
+	$(COMPOSITION) down -v --remove-orphans || true
+
+fclean: env clean
+	docker system prune -af --volumes 2>/dev/null || true
+
+re: env fclean all
+
+.PHONY: all env build up down stop start restart logs clean fclean re
