@@ -23,28 +23,12 @@ else
     echo "WP Config exists."
 fi
 
-# echo "Waiting for mariadb..."
-
-# attempt=1
-# while ! wp db check --allow-root > /dev/null 2>&1; do
-#     if [ "$attempt" -ge 60 ]; then
-#         echo "WP couldn't connect to mariadb after 60 tries"
-#         exit 1
-#     fi
-
-#     echo "WP connection to mariadb failed, retrying..."
-#     attempt=$((attempt + 1))
-#     sleep 1
-# done
-
-# echo "WP successfully connected to mariadb"
-
 echo "Checking WP Website Configs..."
 if ! wp core is-installed --path="$WP_DIR" --allow-root 2>/dev/null; then
     echo "Setting up WP..."
     echo "Creating Admin User..."
     wp core install \
-        --url="$WP_URL:$NGINX_PORT" \
+        --url="$WP_URL" \
         --title="$WP_TITLE" \
         --admin_user="$WP_ADMIN" \
         --admin_password="$WP_ADMIN_PWD" \
@@ -67,4 +51,4 @@ fi
 
 
 echo "WP Entry Script finished!"
-exec $@
+exec "$@"

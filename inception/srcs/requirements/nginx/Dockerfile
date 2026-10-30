@@ -5,7 +5,8 @@ RUN set -eux; \
         nginx \
         openssl \
         ca-certificates; \
-    mkdir -p /etc/nginx/ssl /etc/nginx/conf.d/
+    mkdir -p /etc/nginx/ssl/; \
+    touch /etc/nginx/ssl/inception.key;
 
 COPY --chmod=777 config/entry.sh /usr/local/bin/entrypoint
 COPY --chmod=777 config/healthcheck.sh /usr/local/bin/nginx_healthcheck.sh

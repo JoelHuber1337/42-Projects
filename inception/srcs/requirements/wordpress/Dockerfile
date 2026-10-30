@@ -120,4 +120,4 @@ WORKDIR ${WP_DIR}
 
 # Let the entrypoint initialize WordPress before starting PHP-FPM.
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
-CMD ["php-fpm", "-F"]
+CMD ["php-fpm", "-F", "--allow-to-run-as-root"]

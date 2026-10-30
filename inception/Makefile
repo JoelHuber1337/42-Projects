@@ -33,6 +33,9 @@ restart: stop start
 logs: env
 	$(COMPOSITION) logs -f
 
+ps: env
+	$(COMPOSITION) ps
+
 clean: env down
 	$(COMPOSITION) down -v --remove-orphans || true
 
@@ -41,4 +44,4 @@ fclean: env clean
 
 re: env fclean all
 
-.PHONY: all env build up down stop start restart logs clean fclean re
+.PHONY: all env build up down stop start restart logs ps clean fclean re
